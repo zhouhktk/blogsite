@@ -1,0 +1,54 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+{% load widget_tweaks %}
+{% block title %}{% trans "Signup" %}{% endblock %}
+
+{% block wrapper %}
+    <h3 class="text-center mt-2">{% trans "Sign Up" %}</h3>
+    <small class="float-right">
+        {% blocktrans %}
+            已有账号?<a href="{{ login_url }}">登陆</a>
+        {% endblocktrans %}
+    </small>
+
+    <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+        {% csrf_token %}
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+
+        {% for field in form.visible_fields %}
+            <div class="form-group">
+                {% if forloop.counter == 1 %}
+                    <label for="{{ field.id_for_label }}">邮箱</label>
+                    {% render_field form.email class='form-control' placeholder='邮箱地址' autofocus='autofocus' %}
+                    {% for error in field.errors %}
+                        <small style="color: red" class="help-block">{{ error }}</small>
+                    {% endfor %}
+                {% elif forloop.counter == 4 %}
+                    <label for="{{ field.id_for_label }}">确认密码</label>
+                    {% render_field form.password2 class='form-control' placeholder='确认密码' autofocus='autofocus' %}
+                    {% for error in field.errors %}
+                        <small style="color: red" class="help-block">{{ error }}</small>
+                    {% endfor %}
+                {% else %}
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field|add_class:'form-control'|append_attr:'autofocus=autofocus' }}
+                    {% for error in field.errors %}
+                        <small style="color: red" class="help-block">{{ error }}</small>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+        {% endif %}
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-success form-control">{% trans "Sign Up" %}</button>
+        </div>
+    </form>
+
+{% endblock %}

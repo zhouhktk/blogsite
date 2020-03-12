@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{# 注册后显示发送了电子邮件 #}
+{% load i18n %}
+
+{% block title %}{% trans "Verify Your E-mail Address" %}{% endblock %}
+
+{% block content %}
+    <div class="container text-center mt-5">
+    <h1 class="text-center mt-3">{% trans "Verify Your E-mail Address" %}</h1>
+    <h4 class="text-center text-primary">{% blocktrans %}We have sent an e-mail to you for verification. Follow the link provided to finalize the signup process. Please contact us if you do not receive it within a few minutes.{% endblocktrans %}</h4>
+
+    </div>
+
+{% endblock %}

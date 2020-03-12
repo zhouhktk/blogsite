@@ -1,0 +1,79 @@
+{# 侧边栏 #}
+<div class="col-3 d-none d-lg-block">
+    {# 搜索 #}
+    <form id="search" action="{% url 'article:list' %}" class="border-dark">
+        <input type="text" name="search" class="form-control" placeholder="搜索文章">
+        <button id="s-submit" type="submit">
+            <i class="fas fa-search"></i>
+        </button>
+    </form>
+
+    {# 随机推荐 #}
+    <div class="card mb-4 mt-4" style="display: flex;">
+        <div class="card-body">
+            <p class="card-text mb-1" style="color: #127589">
+                <i class="fas fa-random"></i>&nbsp;随机推荐
+            </p>
+            <hr class="mb-1 mt-0">
+            {% for hot_article in hot_articles %}
+                <p class="card-text mb-1">
+                    <a href="{% url 'article:detail' hot_article.id %}"
+                       class="list-title card-link d-inline-block"
+                       data-toggle="tooltip" data-placement="bottom" title="{{ hot_article.title }}"
+                    >{{ hot_article.title|truncatechars:17 }}...</a>
+                </p>
+            {% empty %}
+                <p class="card-text mb-1">
+                    <a class="disabled list-title card-link d-inline-block">
+                        暂无
+                    </a>
+                </p>
+            {% endfor %}
+        </div>
+    </div>
+    {# 日期归档 #}
+    <div class="card mb-4" style="display: flex;">
+        <div class="card-body">
+            <p class="card-text mb-1" style="color: #127589">
+                <i class="fas fa-calendar-alt"></i>&nbsp;归档
+            </p>
+            <hr class="mb-1 mt-0">
+            {% for article_date, article_count in article_dates.items %}
+                <a href="{% url 'article:article_with_date' article_date.year article_date.month %}"
+                   class="list-title card-link ml-2 mr-2 d-inline-block">{{ article_date|date:'Y年m月' }}</a>
+            {% empty %}
+                <a class="disabled list-title card-link d-inline-block">
+                    暂无
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+    {# 标签云 #}
+    <div class="card mb-4" style="display: flex;">
+        <div class="card-body">
+            <p class="card-text mb-1" style="color: #127589">
+                <i class="fas fa-tags"></i>&nbsp;标签云
+            </p>
+            <hr class="mb-1 mt-0">
+            <div class="side-tag">
+                {% for tag in tags %}
+                    <a href="{% url 'article:article_with_tags' tag.id %}" class='tag-name badge'>
+                        {{ tag }}
+                    </a>
+                {% empty %}
+                    <a class='non-tags badge'>{{ tag }}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {# 友情链接 #}
+    <div class="card mb-4 mt-4" style="display: flex;">
+        <div class="card-body">
+            <p class="card-text mb-1" style="color: #127589">
+                <i class="fas fa-link"></i>&nbsp;友情链接
+            </p>
+            <hr class="mb-1 mt-0">
+            <p class="text-center list-title">虚位以待</p>
+        </div>
+    </div>
+</div>

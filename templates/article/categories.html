@@ -1,0 +1,39 @@
+{% extends 'article/article_list.html' %}
+{% load staticfiles %}
+{% block title %}
+    分类目录
+{% endblock %}
+{% block wrapper %}
+    <div class="col-lg-9 col-12">
+        {% for column in columns %}
+            <div class="card mb-4" style="display: flex">
+                <div class="card-body">
+                    <h4 class="mx-4 card-text mb-1 d-flex" style="color: #127589">
+                        <span class="font-weight-bold mr-auto">{{ column.title }}</span>
+                        {% if column.article.count %}
+                            <a class="card-link d-inline-block"
+                               href="{% url 'article:article_with_column' column.id %}">更多</a>
+                        {% endif %}
+                    </h4>
+                    <hr class="mx-4 mb-1 mt-0">
+                    {% for article in column.article.all|slice:7 %}
+                        <a class="mx-4 mb-1 d-flex list-title card-link d-inline-block"
+                           href="{% url 'article:detail' article.id %}">
+                            <span>{{ article.title }}</span>
+                            <span class="text-secondary ml-auto">
+                                <span class="mr-3" style="color: #065867"><i class="far fa-clock"></i>&nbsp;{{ article.created|date:'Y-m-d' }}</span>
+                                <span class="mr-3" style="color: #174b65"><i class="fas fa-eye"></i>&nbsp;{{ article.total_views }}</span>
+                                <span class="mr-3" style="color: #459d38"><i class="fas fa-comments"></i>&nbsp;{{ article.comments.count }}</span>
+                                <span class="mr-3" style="color: #f70000"><i class="fas fa-heart"></i>&nbsp;{{ article.likes }}</span>
+                            </span>
+                        </a>
+                    {% empty %}
+                        <p class="card-text mb-1">
+                            <a class="mx-4 list-title card-link d-inline-block">暂无</a>
+                        </p>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

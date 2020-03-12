@@ -1,0 +1,5 @@
+.idea/
+__pycache__/
+.conf.json
+db.sqlite3
+*/__pycache__/

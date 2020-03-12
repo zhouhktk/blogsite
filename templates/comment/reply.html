@@ -1,0 +1,58 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <link href="https://cdn.bootcss.com/twitter-bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+<form action="." method="POST" id="reply_form">
+    {% csrf_token %}
+    <div class="form-group">
+        <div id="test">
+            {{ comment_form.media }}
+            {{ comment_form.body }}
+        </div>
+    </div>
+</form>
+<!-- 提交按钮 -->
+<button onclick="confirm_submit({{ article_id }}, {{ parent_comment_id }})" class="btn btn-primary" type="button">回复</button>
+
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.bootcss.com/twitter-bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+<!-- csrf token -->
+<script src="{% static 'csrf.js' %}"></script>
+
+<script>
+    $(function () {
+        $(".django-ckeditor-widget").removeAttr('style');
+    });
+
+    function confirm_submit(article_id, comment_id) {
+        // 从 ckeditor 中取值
+        let isempty = $.trim(CKEDITOR.instances['id_body'].document.getBody().getText());
+        if(isempty.length === 0)return;
+
+        let content = CKEDITOR.instances['id_body'].getData();
+        // 调用 ajax 与后端交换数据
+        $.ajax({
+            url: '/comment/post-comment/' + article_id + '/' + comment_id,
+            type: 'POST',
+            data: {body: content},
+            // 成功回调
+            success: function (e) {
+                if (e.code === '200 OK') {
+                    parent.post_reply_and_show_it(e.new_comment_id);
+                }
+            }
+        })
+    }
+</script>
+</body>
+</html>

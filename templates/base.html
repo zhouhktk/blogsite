@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="{% static 'img/favicon.ico' %}" rel="shortcut icon">
+    <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
+    {#    <link href="https://cdn.bootcss.com/twitter-bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">#}
+    <link href="https://cdn.bootcss.com/font-awesome/5.10.2/css/all.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/highlight.js/9.15.10/styles/atom-one-dark.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'main.css' %}">
+    {% block style %}{% endblock %}
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+{% include 'header.html' %}
+<div class="container" id="wrapper">
+    {% block content %}{% endblock %}
+    <div id="push"></div>
+</div>
+
+{% include 'footer.html' %}
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/popper.js/1.15.0/umd/popper.min.js"></script>
+<script src="https://cdn.bootcss.com/twitter-bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="https://cdn.bootcss.com/highlightjs-line-numbers.js/2.7.0/highlightjs-line-numbers.min.js"></script>
+<script>hljs.initLineNumbersOnLoad();</script>
+{% include 'back_to_top_func.html' %}
+<script src="{% static 'layer/layer.js' %}"></script>
+{% block script %}{% endblock %}
+
+<script>
+    $('nav .dropdown-menu').addClass('dropdown-menu-right my-0 py-0').css({'min-width': '60px'});
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+    $(function () {
+        var urlstr = location.href;
+        $("ul.nav li.nav-item:not(.dropdown)").each(function () {
+            let href = location.host + $(this).children("a:first-child").attr('href');
+            {#console.log(href);#}
+            if (urlstr.indexOf(href) > 0 && href !== ''){
+                $(this).addClass('active');
+                let current = $(this);
+                let all = $("ul.nav li.nav-item:not(.dropdown)");
+                $.each(all, function () {
+                    if (!$(this).is(current)){
+                        $(this).removeClass("active");
+                    }
+                });
+            }
+        });
+    });
+</script>
+</body>
+</html>

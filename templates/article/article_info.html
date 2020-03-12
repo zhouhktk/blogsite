@@ -1,0 +1,6 @@
+<span class="mr-3" style="color: #011f76"><i class="fas fa-user-circle"></i>&nbsp;{{ article.author.username }}</span>
+<span class="mr-3" style="color: #065867"><i class="far fa-clock"></i>&nbsp;{{ article.created|date:'Y-m-d' }}</span>
+<span class="mr-3" style="color: #174b65"><i class="fas fa-eye"></i>&nbsp;{{ article.total_views }}</span>
+<span class="mr-3" style="color: #459d38"><i class="fas fa-comments"></i>&nbsp;{{ article.comments.count }}</span>
+<span class="mr-3" style="color: #f70000"><i class="fas fa-heart"></i>&nbsp;{{ article.likes }}</span>
+{#<span style="color: #620586"><i class="fas fa-history"></i>&nbsp;{{ article.updated|date:'Y-m-d' }}</span>#}

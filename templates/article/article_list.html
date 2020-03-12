@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}
+    {% if column %}
+        当前分类： {{ column.title }}
+    {% else %}
+        文章
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="row mt-4">
+        {% block wrapper %}
+            <div class="col-lg-9 col-12">
+                {% if search %}
+                    {% if articles %}
+                        <h4><span style="color: red">"{{ search }}"</span>的搜索结果如下：</h4>
+                        <hr>
+                    {% else %}
+                        <h4>暂无<span style="color: red">"{{ search }}"</span>有关的文章。</h4>
+                        <hr>
+                    {% endif %}
+                {% endif %}
+                {#正文#}
+                {% for article in articles %}
+                    <div class="card mb-2" style="display: flex">
+                        <div class="row no-gutters align-items-center">
+                            {% if article.cover %}
+                                <div class="col-4 d-none d-md-block" style="overflow: hidden">
+                                    <a href="{% url 'article:detail' article.id %}">
+                                        <img class="card-img rounded my-img" src="{{ article.cover.url }}" alt="avatar"
+                                             title="{{ article.title }}">
+                                    </a>
+                                </div>
+                            {% endif %}
+                            <div class="col">
+                                <div class="card-body">
+                                    <h4>
+                                        {# 标题 #}
+                                        <a href="{% url 'article:detail' article.id %}"
+                                           class="list-title text-success font-weight-bold card-link d-inline-block">
+                                            {{ article.title }}
+                                        </a>
+                                    </h4>
+                                    {# 标签 #}
+                                    {% if article.column or article.tags.all %}
+                                        <div class="mb-2">
+                                            {% if article.column %}
+                                                {# 栏目 #}
+                                                <a href="{% url 'article:article_with_column' article.column.id %}"
+                                                   class="btn btn-sm btn-outline-success px-3">
+                                                    {{ article.column.title }}
+                                                </a>
+                                            {% endif %}
+                                            {% for tag in article.tags.all %}
+                                                <a href="{% url 'article:article_with_tags' tag.id %}"
+                                                   class="badge badge-pill badge-warning list-tag">{{ tag }}</a>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    <p class="text-secondary mb-0">
+                                        {% include 'article/article_info.html' %}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                {# 分页 #}
+                <nav>
+                    <ul class="pagination justify-content-center mt-3">
+                        {# 上一页 #}
+                        <li class="page-item">
+                            {% if current_page.has_previous %}
+                                <a class="page-link" href="?page={{ current_page.previous_page_number }}"
+                                   aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                    <span class="sr-only">Previous</span>
+                                </a>
+                            {% else %}
+                                <span class="page-link" aria-hidden="true">&laquo;</span>
+                            {% endif %}
+                        </li>
+                        {# 页码 #}
+                        {% for page_num in page_range %}
+                            {% if page_num == current_page.number %}
+                                <li class="page-item active ml-2">
+                                    <button class="page-link">{{ page_num }}</button>
+                                </li>
+                            {% elif page_num == '···' %}
+                                <li class="page-item ml-2"><span class="page-link"
+                                                                 aria-hidden="true">{{ page_num }}</span>
+                                </li>
+                            {% else %}
+                                <li class="page-item ml-2"><a class="page-link"
+                                                              href="?page={{ page_num }}">{{ page_num }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                        {# 下一页 #}
+                        <li class="page-item ml-2">
+                            {% if current_page.has_next %}
+                                <a class="page-link" href="?page={{ current_page.next_page_number }}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                    <span class="sr-only">Next</span>
+                                </a>
+                            {% else %}
+                                <span class="page-link" aria-hidden="true">&raquo;</span>
+                            {% endif %}
+                        </li>
+                    </ul>
+                </nav>
+
+            </div>
+        {% endblock %}
+        {# 侧边栏 #}
+        {% include 'article/article_sider.html' %}
+    </div>
+{% endblock %}
+{% block script %}
+    <script src="{% static 'main.js' %}"></script>
+{% endblock %}

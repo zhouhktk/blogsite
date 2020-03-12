@@ -1,0 +1,80 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+{% load account socialaccount %}
+{% load widget_tweaks %}
+
+{% block title %}{% trans "Sign In" %}{% endblock %}
+
+{% block wrapper %}
+    <h3 class="text-center mt-2">{% trans "Sign In" %}</h3>
+    <small class="float-right">
+        还没有账号?
+        <a href="{{ signup_url }}">注册</a>
+    </small>
+
+    <form class="login" method="POST" action="{% url 'account_login' %}">
+        {% csrf_token %}
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+        {% for field in form.visible_fields %}
+            <div class="form-group">
+                {% if forloop.counter == 1 %}
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {% render_field form.login class='form-control' placeholder='用户名或邮箱地址' autofocus='autofocus' %}
+                    {% for error in field.errors %}
+                        <small style="color: red" class="help-block">{{ error }}</small>
+                    {% endfor %}
+                {% elif forloop.counter == 2 %}
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field|add_class:'form-control' }}
+                    <small id="{{ field.id_for_label }}" class="form-text text-muted ml-1">
+                        <a class="btn-link" style="text-decoration: none"
+                           href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+                    </small>
+                    {% for error in field.errors %}
+                        <small style="color: red" class="help-block">{{ error }}</small>
+                    {% endfor %}
+                {% else %}
+                    <div class="custom-control custom-checkbox">
+                        {{ field|append_attr:'checked'|add_class:'custom-control-input' }}
+                        <label for="{{ field.id_for_label }}" class="custom-control-label">{{ field.label }}</label>
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+        {% endif %}
+        <div class="form-group">
+            <button class="btn btn-success form-control" type="submit">{% trans "Sign In" %}</button>
+        </div>
+    </form>
+
+    {# 第三方账户登陆 #}
+    {% get_providers as socialaccount_providers %}
+    {% if socialaccount_providers %}
+        <div class="text-center">
+            <div class='mb-2'>
+                <small>第三方登陆</small>
+            </div>
+            <div>
+                <a href="/accounts/github/login/?process=login" title="GitHub">
+                    <i class="fab fa-github" style="font-size: 3em; color: dimgray"></i>
+                </a>
+            </div>
+        </div>
+{#        <div class="socialaccount_ballot">#}
+{#            <ul class="socialaccount_providers list-unstyled">#}
+{#                {% include "socialaccount/snippets/provider_list.html" with process="login" %}#}
+{#            </ul>#}
+{#        </div>#}
+        {% include "socialaccount/snippets/login_extra.html" %}
+    {% else %}
+{#        <p>{% blocktrans %}If you have not created an account yet, then please#}
+{#            <a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}</p>#}
+    {% endif %}
+
+{% endblock %}
